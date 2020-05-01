@@ -1,31 +1,31 @@
-type LoopBackQueryDate = {
+export type LoopBackQueryDate = {
 	gt?: Date | Number
 	lt?: Date | Number
 }
 
-type LoopBackQueryBetween = {
+export type LoopBackQueryBetween = {
 	between: Number[]
 }
 
-type LoopBackQueryLikeNotLike = {
+export type LoopBackQueryLikeNotLike = {
 	like?: string
 	nlike?: string
 }
 
-type LoopBackQueryInArray = {
+export type LoopBackQueryInArray = {
 	inq: string[]
 }
 
-type LoopBackQueryWhere = {
+export type LoopBackQueryWhere = {
 	[property: string]: string | LoopBackQueryDate | LoopBackQueryBetween | LoopBackQueryLikeNotLike | LoopBackQueryInArray
 }
 
-type LoopBackQueryInclude = {
+export type LoopBackQueryInclude = {
 	relation: string
 	scope: LoopBackQueryScope
 }
 
-type LoopBackQueryScope = {
+export type LoopBackQueryScope = {
 	offset?: Number
 	limit?: Number
 	skip?: Number

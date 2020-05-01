@@ -2,8 +2,8 @@ import _ from 'lodash';
 import { Subject } from "rxjs";
 import { IRepository, RepositoryPolicy } from './Types/Repositories';
 import { LoopBackQueryFilter } from "./Third-party/Loopback-next";
-import Service from "./Services";
-import Model from "./Models";
+import { Service } from "./Services";
+import { Model } from "./Models";
 import { DexieDatasource } from "./Datasources";
 
 export type RepositoryProps<T extends Model> = {
@@ -13,7 +13,7 @@ export type RepositoryProps<T extends Model> = {
 	table: string
 }
 
-abstract class Repository<T extends Model> implements IRepository<T> {
+export abstract class Repository<T extends Model> implements IRepository<T> {
 	protected ds: DexieDatasource;
 	protected service: Service<T>;
 	protected policy: RepositoryPolicy;
@@ -158,5 +158,3 @@ abstract class Repository<T extends Model> implements IRepository<T> {
 		return result;
 	}
 }
-
-export default Repository;

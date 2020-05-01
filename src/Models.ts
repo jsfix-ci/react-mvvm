@@ -1,4 +1,4 @@
-class Model {
+export class Model {
 	static Serialize<T>(model: T, data: any): T {
 		return Object.assign(model, data);
 	}
@@ -10,5 +10,3 @@ class Model {
 		return data;
 	}
 }
-
-export default Model;

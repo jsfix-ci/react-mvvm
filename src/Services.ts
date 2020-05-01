@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import { LoopBackQueryFilter } from "./Third-party/Loopback-next";
 import { IService, IBaseService } from './Types/Services';
-import Model from "./Models";
+import { Model } from "./Models";
 
 export type ServicesProps = {
 	API_PATH: string
@@ -18,7 +18,7 @@ export class BaseService implements IBaseService {
 	}
 }
 
-abstract class Service<T extends Model> extends BaseService implements IService<T> {
+export abstract class Service<T extends Model> extends BaseService implements IService<T> {
 	protected api_path: string;
 	constructor({ API_PATH, client }: ServicesProps) {
 		super(client);
@@ -58,5 +58,3 @@ abstract class Service<T extends Model> extends BaseService implements IService<
 		return (res.status === 204);
 	}
 }
-
-export default Service;

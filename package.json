@@ -1,6 +1,6 @@
 {
 	"name": "@alma3lol/react-mvvm",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "An MVVM implementation package for React",
 	"main": "index.js",
 	"types": "index.d.ts",

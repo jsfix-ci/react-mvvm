@@ -1,6 +1,7 @@
 import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Dexie from 'dexie';
 import { IAPIDatasource, IDexieDatasource } from './Types/Datasources';
+import { Model } from './Models';
 
 export class APIDatasource implements IAPIDatasource {
 	private datasource: AxiosInstance;
@@ -24,23 +25,23 @@ export class DexieDatasource implements IDexieDatasource {
 	getDatasource(): Dexie {
 		return this.datasource;
 	}
-	async setAll<T>(table: string, data: T[], keys: string[]): Promise<any> {
+	async setAll<T extends Model>(table: string, data: T[], keys: string[]): Promise<any> {
 		await this.datasource.table<T>(table).clear();
 		return this.datasource.table<T>(table).bulkAdd(data, keys);
 	}
-	async getAll<T>(table: string): Promise<T[]> {
+	async getAll<T extends Model>(table: string): Promise<T[]> {
 		return this.datasource.table<T>(table).toArray()
 	}
-	async get<T>(table: string, key: string): Promise<T | undefined> {
+	async get<T extends Model>(table: string, key: string): Promise<T | undefined> {
 		return this.datasource.table<T>(table).get(key);
 	}
-	async set<T>(table: string, data: T, key: string): Promise<any> {
+	async set<T extends Model>(table: string, data: T, key: string): Promise<any> {
 		return this.datasource.table<T>(table).put(data, key);
 	}
-	async delete<T>(table: string, key: string): Promise<void> {
+	async delete<T extends Model>(table: string, key: string): Promise<void> {
 		await this.datasource.table<T>(table).delete(key);
 	}
-	async update<T>(table: string, key: string, data: any): Promise<void> {
+	async update<T extends Model>(table: string, key: string, data: any): Promise<void> {
 		await this.datasource.table<T>(table).update(key, data);
 	}
 }

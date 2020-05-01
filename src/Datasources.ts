@@ -2,14 +2,9 @@ import Axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import Dexie from 'dexie';
 import { IAPIDatasource, IDexieDatasource } from './Types/Datasources';
 
-type APIDatasourceProps = {
-	baseURL: string
-	headers: AxiosRequestConfig
-}
-
 export class APIDatasource implements IAPIDatasource {
 	private datasource: AxiosInstance;
-	constructor({ baseURL, headers }: APIDatasourceProps) {
+	constructor({ baseURL, headers }: AxiosRequestConfig) {
 		this.datasource = Axios.create({
 			baseURL,
 			headers

@@ -1,23 +1,41 @@
 {
-  "name": "@alma3lol/react-mvvm",
-  "version": "1.0.0",
-  "description": "An MVVM implementation package for React",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alma3lol/react-mvvm.git"
-  },
-  "author": "Omar Almalol",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/alma3lol/react-mvvm/issues"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "homepage": "https://github.com/alma3lol/react-mvvm#readme"
+	"name": "@alma3lol/react-mvvm",
+	"version": "1.0.0",
+	"description": "An MVVM implementation package for React",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"scripts": {
+		"clean": "node ./scripts/run-clean.js *.tsbuildinfo dist",
+		"build": "tsc",
+		"build:watch": "tsc -w",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node .",
+		"start:watch": "nodemon ."
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/alma3lol/react-mvvm.git"
+	},
+	"author": "Omar Almalol",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/alma3lol/react-mvvm/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://github.com/alma3lol/react-mvvm#readme",
+	"devDependencies": {
+		"nodemon": "^2.0.3",
+		"typescript": "^3.8.3"
+	},
+	"dependencies": {
+		"@types/lodash": "^4.14.150",
+		"axios": "^0.19.2",
+		"dexie": "^2.0.4",
+		"lodash": "^4.17.15",
+		"rimraf": "^3.0.2",
+		"rxjs": "^6.5.5",
+		"tslib": "^1.11.1"
+	}
 }

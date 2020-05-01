@@ -26,16 +26,16 @@
 	},
 	"homepage": "https://github.com/alma3lol/react-mvvm#readme",
 	"devDependencies": {
+		"@types/lodash": "^4.14.150",
 		"nodemon": "^2.0.3",
-		"typescript": "^3.8.3"
+		"typescript": "^3.8.3",
+		"tslib": "^1.11.1"
 	},
 	"dependencies": {
-		"@types/lodash": "^4.14.150",
 		"axios": "^0.19.2",
 		"dexie": "^2.0.4",
 		"lodash": "^4.17.15",
 		"rimraf": "^3.0.2",
 		"rxjs": "^6.5.5",
-		"tslib": "^1.11.1"
 	}
 }

@@ -1,12 +1,16 @@
+import { AnyObject } from './Types';
+
 export class Model {
-	static Serialize<T>(model: T, data: any): T {
-		return Object.assign(model, data);
-	}
-	Deserialize(): any {
-		const data: any = {};
-		for(const prop in this) {
-			data[prop] = this[prop];
+	[name: string]: any
+	Deserialize(): Object {
+		const data: AnyObject = {};
+		for (const prop in this) {
+			if (typeof this[prop] !== 'function' && prop !== 'decoratorIdProperty') data[prop] = this[prop]
 		}
-		return data;
+		return data
+	}
+	idProperty = () => {
+		if (this.decoratorIdProperty) return this[this.decoratorIdProperty]
+		throw Error("No ID property set using '@property' decorator!")
 	}
 }

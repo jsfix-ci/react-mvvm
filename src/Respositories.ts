@@ -28,8 +28,8 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		this.policy = policy;
 		return this;
 	}
-	abstract keysFromModels(data: T[]): string[];
-	abstract keyFromModel(data: T): string;
+	private keysFromModels = (data: T[]): string[] => _.map(data, model => model.idProperty())
+	private keyFromModel = (data: T): string => data.idProperty();
 	getAll = (): Subject<T[]> => {
 		const subject = new Subject<T[]>()
 		switch (this.policy) {
@@ -42,7 +42,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 						await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
 						subject.next(dbModels);
 					})
-					.catch( async () => {
+					.catch(async () => {
 						let models = await this.ds.getAll<T>(this.table)
 						subject.next(models);
 					}).finally(() => {
@@ -77,7 +77,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 						await this.ds.setAll<T>(this.table, dbData, this.keysFromModels(dbData));
 						subject.next(models);
 					})
-					.catch( async () => {
+					.catch(async () => {
 						let models = await this.ds.getAll<T>(this.table)
 						models = this.filterData(models, filter);
 						subject.next(models);
@@ -112,7 +112,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 					.then((model) => {
 						subject.next(model);
 					})
-					.catch( async () => {
+					.catch(async () => {
 						let model = await this.ds.get<T>(this.table, id)
 						subject.next(model);
 					}).finally(() => {

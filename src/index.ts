@@ -1,4 +1,5 @@
 export * from './Datasources';
+export * from './Decorators';
 export * from './Models';
 export * from './Respositories';
 export * from './Services';

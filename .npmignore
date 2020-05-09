@@ -2,5 +2,5 @@
 **/__tests__/**
 src
 tsconfig.common.json
-tsconfig.build.json
-tsconfig.build.tsbuildinfo
+tsconfig.json
+tsconfig.tsbuildinfo

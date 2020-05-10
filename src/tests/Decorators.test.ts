@@ -7,20 +7,20 @@ describe('Decorators', () => {
 			table: 'table',
 			api_path: 'api_path'
 		})
-		class TestClass { }
-		const table = Reflector.getMetadata(CLASS_TABLE_METADATA_KEY, TestClass)
-		const api_path = Reflector.getMetadata(CLASS_API_PATH_METADATA_KEY, TestClass)
+		class TestModel { }
+		const table = Reflector.getMetadata(CLASS_TABLE_METADATA_KEY, TestModel)
+		const api_path = Reflector.getMetadata(CLASS_API_PATH_METADATA_KEY, TestModel)
 		expect(table).toBe("table")
 		expect(api_path).toBe("api_path")
 	})
 	test('should decorate a class with id property', () => {
-		class TestClass {
+		class TestModel {
 			@property({
 				id: true
 			})
 			idProperty: string
 		}
-		const tc = new TestClass()
-		expect(Reflector.getMetadata(CLASS_ID_PROPERTY_METADATA_KEY, tc)).toBe("idProperty")
+		const tm = new TestModel()
+		expect(Reflector.getMetadata(CLASS_ID_PROPERTY_METADATA_KEY, tm)).toBe("idProperty")
 	})
 })

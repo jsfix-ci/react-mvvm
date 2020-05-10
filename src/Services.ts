@@ -4,46 +4,51 @@ import { Model } from "./Models";
 
 export abstract class Service<T extends Model> extends BaseService implements IService<T> {
 	protected api_path: string;
-	constructor({ API_PATH, client, pathParams }: ServicesProps) {
+	constructor({ API_PATH, client }: ServicesProps) {
 		super(client);
 		this.api_path = API_PATH;
+
+	}
+	private renderPath(pathParams?: { [param: string]: string }) {
+		let result = this.api_path;
 		if (pathParams) {
 			for (const param in pathParams) {
-				this.api_path = this.api_path.replace(`{${param}}`, pathParams[param])
+				result = result.replace(`{${param}}`, pathParams[param])
 			}
 		}
+		return result
 	}
 	abstract createModel(data: Partial<T>): T;
-	getAll = async (): Promise<T[]> => {
-		const res = await this.client.get(this.api_path);
+	getAll = async (pathParams?: { [param: string]: string }): Promise<T[]> => {
+		const res = await this.client.get(this.renderPath(pathParams));
 		const Ts: T[] = [];
 		res.data.forEach((data: Partial<T>) => {
 			Ts.push(this.createModel(data))
 		});
 		return Ts;
 	}
-	find = async (filter: LoopBackQueryFilter): Promise<T[]> => {
-		const res = await this.client.get(`${this.api_path}?filter=${JSON.stringify(filter)}`);
+	find = async (filter: LoopBackQueryFilter, pathParams?: { [param: string]: string }): Promise<T[]> => {
+		const res = await this.client.get(`${this.renderPath(pathParams)}?filter=${JSON.stringify(filter)}`);
 		const Ts: T[] = [];
 		res.data.forEach((data: Partial<T>) => {
 			Ts.push(this.createModel(data))
 		});
 		return Ts;
 	}
-	get = async (id: string): Promise<T> => {
-		const res = await this.client.get(`${this.api_path}/${id}`);
+	get = async (id: string, pathParams?: { [param: string]: string }): Promise<T> => {
+		const res = await this.client.get(`${this.renderPath(pathParams)}/${id}`);
 		return this.createModel(res.data);
 	}
-	create = async (model: T): Promise<T> => {
-		const res = await this.client.post(this.api_path, JSON.stringify(model.Deserialize()));
+	create = async (model: T, pathParams?: { [param: string]: string }): Promise<T> => {
+		const res = await this.client.post(this.renderPath(pathParams), JSON.stringify(model.Deserialize()));
 		return this.createModel(res.data);
 	}
-	delete = async (id: string): Promise<boolean> => {
-		const res = await this.client.delete(`${this.api_path}/${id}`);
+	delete = async (id: string, pathParams?: { [param: string]: string }): Promise<boolean> => {
+		const res = await this.client.delete(`${this.renderPath(pathParams)}/${id}`);
 		return (res.status === 204);
 	}
-	update = async (id: string, model: T): Promise<boolean> => {
-		const res = await this.client.put(`${this.api_path}/${id}`, JSON.stringify(model.Deserialize()));
+	update = async (id: string, model: T, pathParams?: { [param: string]: string }): Promise<boolean> => {
+		const res = await this.client.put(`${this.renderPath(pathParams)}/${id}`, JSON.stringify(model.Deserialize()));
 		return (res.status === 204);
 	}
 }

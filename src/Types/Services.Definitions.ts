@@ -17,6 +17,5 @@ export interface IService<T extends Model> {
 
 export type ServicesProps = {
 	API_PATH: string
-	client: AxiosInstance,
-	pathParams?: { [param: string]: string }
+	client: AxiosInstance
 }

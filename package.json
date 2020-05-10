@@ -1,23 +1,52 @@
 {
-  "name": "@alma3lol/react-mvvm",
-  "version": "1.0.0",
-  "description": "An MVVM implementation package for React",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alma3lol/react-mvvm.git"
-  },
-  "author": "Omar Almalol",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/alma3lol/react-mvvm/issues"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "homepage": "https://github.com/alma3lol/react-mvvm#readme"
+	"name": "@alma3lol/react-mvvm",
+	"version": "1.2.0",
+	"description": "An MVVM implementation package for React",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"scripts": {
+		"clean": "node ./scripts/run-clean.js *.tsbuildinfo dist",
+		"build": "tsc",
+		"build:watch": "tsc -w",
+		"test": "jest",
+		"test:watch": "jest --watch",
+		"start": "node .",
+		"start:watch": "nodemon .",
+		"publish-it": "npm publish"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/alma3lol/react-mvvm.git"
+	},
+	"author": "Omar Almalol",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/alma3lol/react-mvvm/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	},
+	"homepage": "https://github.com/alma3lol/react-mvvm#readme",
+	"devDependencies": {
+		"@babel/plugin-proposal-class-properties": "^7.8.3",
+		"@babel/plugin-proposal-decorators": "^7.8.3",
+		"@babel/plugin-transform-runtime": "^7.9.6",
+		"@babel/preset-env": "^7.9.6",
+		"@babel/preset-typescript": "^7.9.0",
+		"@types/jest": "^25.2.1",
+		"@types/lodash": "^4.14.150",
+		"@types/node": "^13.13.5",
+		"jest": "^26.0.1",
+		"nodemon": "^2.0.3",
+		"tslib": "^1.11.1",
+		"typescript": "^3.8.3"
+	},
+	"dependencies": {
+		"axios": "^0.19.2",
+		"dexie": "^2.0.4",
+		"lodash": "^4.17.15",
+		"reflect-metadata": "^0.1.13",
+		"rimraf": "^3.0.2",
+		"rxjs": "^6.5.5"
+	}
 }

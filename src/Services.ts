@@ -1,13 +1,17 @@
-import { AxiosInstance } from "axios";
 import { LoopBackQueryFilter } from "./Third-party/Loopback-next";
 import { IService, BaseService, ServicesProps } from './Types';
 import { Model } from "./Models";
 
 export abstract class Service<T extends Model> extends BaseService implements IService<T> {
 	protected api_path: string;
-	constructor({ API_PATH, client }: ServicesProps) {
+	constructor({ API_PATH, client, pathParams }: ServicesProps) {
 		super(client);
 		this.api_path = API_PATH;
+		if (pathParams) {
+			for (const param in pathParams) {
+				this.api_path = this.api_path.replace(`{${param}}`, pathParams[param])
+			}
+		}
 	}
 	abstract createModel(data: Partial<T>): T;
 	getAll = async (): Promise<T[]> => {

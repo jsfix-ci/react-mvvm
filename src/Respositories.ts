@@ -28,8 +28,8 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		this.policy = policy;
 		return this;
 	}
-	private keysFromModels = (data: T[]): string[] => _.map(data, model => model.idProperty())
-	private keyFromModel = (data: T): string => data.idProperty();
+	private keysFromModels = (data: T[]): string[] => _.map(data, model => model.getId())
+	private keyFromModel = (data: T): string => data.getId();
 	getAll = (): Subject<T[]> => {
 		const subject = new Subject<T[]>()
 		switch (this.policy) {

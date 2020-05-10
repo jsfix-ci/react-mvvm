@@ -1,22 +1,7 @@
 import { AxiosInstance } from "axios";
 import { LoopBackQueryFilter } from "./Third-party/Loopback-next";
-import { IService, IBaseService } from './Types/Services';
+import { IService, BaseService, ServicesProps } from './Types';
 import { Model } from "./Models";
-
-export type ServicesProps = {
-	API_PATH: string
-	client: AxiosInstance
-}
-
-export class BaseService implements IBaseService {
-	protected client: AxiosInstance;
-	constructor(client: AxiosInstance) {
-		this.client = client;
-	}
-	setClient = (client: AxiosInstance) => {
-		this.client = client;
-	}
-}
 
 export abstract class Service<T extends Model> extends BaseService implements IService<T> {
 	protected api_path: string;
@@ -24,11 +9,11 @@ export abstract class Service<T extends Model> extends BaseService implements IS
 		super(client);
 		this.api_path = API_PATH;
 	}
-	abstract createModel(data: any): T;
+	abstract createModel(data: Partial<T>): T;
 	getAll = async (): Promise<T[]> => {
 		const res = await this.client.get(this.api_path);
 		const Ts: T[] = [];
-		res.data.forEach((data: any) => {
+		res.data.forEach((data: Partial<T>) => {
 			Ts.push(this.createModel(data))
 		});
 		return Ts;
@@ -36,7 +21,7 @@ export abstract class Service<T extends Model> extends BaseService implements IS
 	find = async (filter: LoopBackQueryFilter): Promise<T[]> => {
 		const res = await this.client.get(`${this.api_path}?filter=${JSON.stringify(filter)}`);
 		const Ts: T[] = [];
-		res.data.forEach((data: any) => {
+		res.data.forEach((data: Partial<T>) => {
 			Ts.push(this.createModel(data))
 		});
 		return Ts;

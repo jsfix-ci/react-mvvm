@@ -1,12 +1,11 @@
 import { Model } from "../Models"
-import { property } from '../Decorators'
+import { property, model } from '../Decorators'
 
 describe('Models', () => {
 	test('should return ID property\'s value of model', () => {
-		class TestClass extends Model {
-			constructor(data: Partial<TestClass>) {
-				super()
-				Object.assign(this, data)
+		class TestModel extends Model {
+			constructor(data: Partial<TestModel>) {
+				super(data)
 			}
 
 			@property({
@@ -14,9 +13,18 @@ describe('Models', () => {
 			})
 			idProperty: string
 		}
-		const tc = new TestClass({
+		const tm = new TestModel({
 			idProperty: 'Test'
 		})
-		expect(tc.getId()).toBe(tc.idProperty)
+		expect(tm.getId()).toBe(tm.idProperty)
+	})
+	test('should return table & api_path metadata values', () => {
+		@model({
+			api_path: 'api-path',
+			table: 'my-table'
+		})
+		class TestModel extends Model { }
+		expect(TestModel.getTable()).toBe("my-table")
+		expect(TestModel.getApiPath()).toBe("api-path")
 	})
 })

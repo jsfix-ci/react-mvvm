@@ -1,7 +1,7 @@
 import { Subject } from "rxjs";
 import { LoopBackQueryFilter } from "../Third-party/Loopback-next";
 
-export type RepositoryPolicy = 'API_FIRST' | 'DATABASE_FIRST';
+export type RepositoryPolicy = 'API_FIRST' | 'DATABASE_FIRST' | 'API_ONLY' | 'DATABASE_ONLY';
 
 export interface IRepository<T> {
 	getAll(): Subject<T[]>

@@ -18,14 +18,18 @@ export class APIDatasource implements IAPIDatasource {
 
 export class DexieDatasource implements IDexieDatasource {
 	private datasource: Dexie;
-	constructor(database: string, stores: any, indexeddb?: any) {
-		this.datasource = new Dexie(database, { indexedDB: indexeddb });
-		this.datasource.version(1).stores(stores)
+	constructor(database: string, stores: any, version: number = 1, indexeddb?: any) {
+		this.datasource = new Dexie(database, { indexedDB: indexeddb })
+		this.datasource.version(version).stores(stores)
+	}
+	open(): this {
+		this.datasource.open()
+		return this
 	}
 	getDatasource(): Dexie {
 		return this.datasource;
 	}
-	async setAll<T extends Model>(table: string, data: T[], keys: string[]): Promise<any> {
+	async setAll<T extends Model>(table: string, data: T[], keys?: string[]): Promise<any> {
 		await this.datasource.table<T>(table).clear();
 		return this.datasource.table<T>(table).bulkAdd(data, keys);
 	}

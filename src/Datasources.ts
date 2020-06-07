@@ -39,7 +39,7 @@ export class DexieDatasource implements IDexieDatasource {
 	async get<T extends Model>(table: string, key: string): Promise<T | undefined> {
 		return this.datasource.table<T>(table).get(key);
 	}
-	async set<T extends Model>(table: string, data: T, key: string): Promise<any> {
+	async set<T extends Model>(table: string, data: T, key?: string): Promise<any> {
 		return this.datasource.table<T>(table).put(data, key);
 	}
 	async delete<T extends Model>(table: string, key: string): Promise<void> {

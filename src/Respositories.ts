@@ -33,11 +33,11 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 	}
 	private keysFromModels = (data: T[]): string[] => _.map(data, model => model.getId())
 	private keyFromModel = (data: T): string => data.getId();
-	getAll = (): Subject<T[]> => {
+	getAll = (pathParams?: { [param: string]: string }): Subject<T[]> => {
 		const subject = new Subject<T[]>()
 		switch (this.policy) {
 			case "API_FIRST":
-				this.service.getAll()
+				this.service.getAll(pathParams)
 					.then(async (models) => {
 						subject.next(models);
 						let dbModels = await this.ds.getAll<T>(this.table);
@@ -57,7 +57,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 				this.ds.getAll<T>(this.table)
 					.then(async (models) => {
 						subject.next(models);
-						models = await this.service.getAll();
+						models = await this.service.getAll(pathParams);
 						let dbModels = await this.ds.getAll<T>(this.table)
 						dbModels = _.assign([], dbModels, models);
 						if (this.noKeys) await this.ds.setAll<T>(this.table, dbModels);
@@ -69,7 +69,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 					})
 				break;
 			case "API_ONLY":
-				this.service.getAll()
+				this.service.getAll(pathParams)
 					.then(async (models) => subject.next(models))
 					.catch(async () => subject.next([]))
 					.finally(() => subject.complete())
@@ -82,11 +82,11 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		}
 		return subject;
 	}
-	find = (filter: LoopBackQueryFilter): Subject<T[]> => {
+	find = (filter: LoopBackQueryFilter, pathParams?: { [param: string]: string }): Subject<T[]> => {
 		const subject = new Subject<T[]>()
 		switch (this.policy) {
 			case "API_FIRST":
-				this.service.find(filter)
+				this.service.find(filter, pathParams)
 					.then(async (models) => {
 						let dbModels = await this.ds.getAll<T>(this.table);
 						dbModels = _.assign([], dbModels, models);
@@ -107,7 +107,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 					.then(async (models) => {
 						models = this.filterData(models, filter);
 						subject.next(models);
-						models = await this.service.find(filter);
+						models = await this.service.find(filter, pathParams);
 						let dbModels = await this.ds.getAll<T>(this.table);
 						dbModels = _.assign([], dbModels, models);
 						if (this.noKeys) await this.ds.setAll<T>(this.table, dbModels);
@@ -122,11 +122,11 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		return subject;
 	}
 	abstract filterData(data: T[], filter: LoopBackQueryFilter): T[];
-	get = (id: string): Subject<T> => {
+	get = (id: string, pathParams?: { [param: string]: string }): Subject<T> => {
 		const subject = new Subject<T>()
 		switch (this.policy) {
 			case "API_FIRST":
-				this.service.get(id)
+				this.service.get(id, pathParams)
 					.then((model) => {
 						subject.next(model);
 					})
@@ -141,7 +141,7 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 				this.ds.get<T>(this.table, id)
 					.then(async (model) => subject.next(model))
 					.catch(async () => {
-						let model = await this.service.get(id);
+						let model = await this.service.get(id, pathParams);
 						await this.ds.update<T>(this.table, id, model);
 						subject.next(model);
 					})
@@ -150,9 +150,9 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		}
 		return subject;
 	}
-	create = (data: any): Subject<T> => {
+	create = (data: any, pathParams?: { [param: string]: string }): Subject<T> => {
 		const subject = new Subject<T>()
-		this.service.create(data).then(async (model) => {
+		this.service.create(data, pathParams).then(async (model) => {
 			subject.next(model);
 			await this.ds.set<T>(this.table, model, this.keyFromModel(model))
 			if (this.noKeys) await this.ds.set<T>(this.table, model);
@@ -161,13 +161,13 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		})
 		return subject;
 	}
-	delete = async (id: string): Promise<boolean> => {
-		const result = await this.service.delete(id);
+	delete = async (id: string, pathParams?: { [param: string]: string }): Promise<boolean> => {
+		const result = await this.service.delete(id, pathParams);
 		if (result) await this.ds.delete<T>(this.table, id);
 		return result;
 	}
-	update = async (id: string, model: any): Promise<boolean> => {
-		const result = await this.service.update(id, model);
+	update = async (id: string, model: any, pathParams?: { [param: string]: string }): Promise<boolean> => {
+		const result = await this.service.update(id, model, pathParams);
 		if (result) await this.ds.update<T>(this.table, id, model);
 		return result;
 	}

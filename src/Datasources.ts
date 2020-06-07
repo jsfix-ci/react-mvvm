@@ -31,7 +31,8 @@ export class DexieDatasource implements IDexieDatasource {
 	}
 	async setAll<T extends Model>(table: string, data: T[], keys?: string[]): Promise<any> {
 		await this.datasource.table<T>(table).clear();
-		return this.datasource.table<T>(table).bulkAdd(data, keys);
+		if (keys) return this.datasource.table<T>(table).bulkAdd(data, keys);
+		else return this.datasource.table<T>(table).bulkAdd(data);
 	}
 	async getAll<T extends Model>(table: string): Promise<T[]> {
 		return this.datasource.table<T>(table).toArray()
@@ -40,7 +41,8 @@ export class DexieDatasource implements IDexieDatasource {
 		return this.datasource.table<T>(table).get(key);
 	}
 	async set<T extends Model>(table: string, data: T, key?: string): Promise<any> {
-		return this.datasource.table<T>(table).put(data, key);
+		if (key) return this.datasource.table<T>(table).put(data, key);
+		else return this.datasource.table<T>(table).put(data);
 	}
 	async delete<T extends Model>(table: string, key: string): Promise<void> {
 		await this.datasource.table<T>(table).delete(key);

@@ -10,7 +10,8 @@ export type RepositoryProps<T extends Model> = {
 	ds: DexieDatasource
 	service: Service<T>
 	policy?: RepositoryPolicy
-	table: string
+	table: string,
+	noKeys?: boolean
 }
 
 export abstract class Repository<T extends Model> implements IRepository<T> {
@@ -18,11 +19,13 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 	protected service: Service<T>;
 	protected policy: RepositoryPolicy;
 	protected table: string;
-	constructor({ ds, service, policy, table }: RepositoryProps<T>) {
+	protected noKeys: boolean;
+	constructor({ ds, service, policy, table, noKeys }: RepositoryProps<T>) {
 		this.ds = ds;
 		this.service = service;
 		this.policy = (policy) ? policy : "API_FIRST";
 		this.table = table;
+		this.noKeys = !!noKeys;
 	}
 	setPolicy = (policy: RepositoryPolicy): this => {
 		this.policy = policy;
@@ -39,7 +42,8 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 						subject.next(models);
 						let dbModels = await this.ds.getAll<T>(this.table);
 						dbModels = _.assign([], dbModels, models);
-						await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
+						if (this.noKeys) await this.ds.setAll<T>(this.table, dbModels);
+						else await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
 						subject.next(dbModels);
 					})
 					.catch(async () => {
@@ -56,12 +60,24 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 						models = await this.service.getAll();
 						let dbModels = await this.ds.getAll<T>(this.table)
 						dbModels = _.assign([], dbModels, models);
-						await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
+						if (this.noKeys) await this.ds.setAll<T>(this.table, dbModels);
+						else await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
 						subject.next(dbModels);
 					})
 					.finally(() => {
 						subject.complete()
 					})
+				break;
+			case "API_ONLY":
+				this.service.getAll()
+					.then(async (models) => subject.next(models))
+					.catch(async () => subject.next([]))
+					.finally(() => subject.complete())
+				break;
+			case "DATABASE_ONLY":
+				this.ds.getAll<T>(this.table)
+					.then(async (models) => subject.next(models))
+					.finally(() => subject.complete())
 				break;
 		}
 		return subject;
@@ -72,9 +88,10 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 			case "API_FIRST":
 				this.service.find(filter)
 					.then(async (models) => {
-						let dbData = await this.ds.getAll<T>(this.table);
-						dbData = _.assign([], dbData, models);
-						await this.ds.setAll<T>(this.table, dbData, this.keysFromModels(dbData));
+						let dbModels = await this.ds.getAll<T>(this.table);
+						dbModels = _.assign([], dbModels, models);
+						if (this.noKeys) await this.ds.setAll<T>(this.table, dbModels);
+						else await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
 						subject.next(models);
 					})
 					.catch(async () => {
@@ -93,7 +110,8 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 						models = await this.service.find(filter);
 						let dbModels = await this.ds.getAll<T>(this.table);
 						dbModels = _.assign([], dbModels, models);
-						await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
+						if (this.noKeys) await this.ds.setAll<T>(this.table, dbModels);
+						else await this.ds.setAll<T>(this.table, dbModels, this.keysFromModels(dbModels));
 						subject.next(models);
 					})
 					.finally(() => {
@@ -121,19 +139,13 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 				break;
 			case "DATABASE_FIRST":
 				this.ds.get<T>(this.table, id)
-					.then(async (model) => {
-						if (model !== undefined) {
-							subject.next(model);
-						}
-						throw "Go fetch the API";
-					}).catch(async () => {
-						let model = await this.service.get(id)
+					.then(async (model) => subject.next(model))
+					.catch(async () => {
+						let model = await this.service.get(id);
 						await this.ds.update<T>(this.table, id, model);
 						subject.next(model);
 					})
-					.finally(() => {
-						subject.complete()
-					})
+					.finally(() => subject.complete())
 				break;
 		}
 		return subject;
@@ -143,6 +155,8 @@ export abstract class Repository<T extends Model> implements IRepository<T> {
 		this.service.create(data).then(async (model) => {
 			subject.next(model);
 			await this.ds.set<T>(this.table, model, this.keyFromModel(model))
+			if (this.noKeys) await this.ds.set<T>(this.table, model);
+			else await this.ds.set<T>(this.table, model, this.keyFromModel(model));
 			subject.complete();
 		})
 		return subject;

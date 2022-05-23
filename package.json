@@ -43,7 +43,7 @@
 	},
 	"dependencies": {
 		"axios": "^0.21.1",
-		"dexie": "^2.0.4",
+		"dexie": "^3.2.2",
 		"lodash": "^4.17.15",
 		"reflect-metadata": "^0.1.13",
 		"rimraf": "^3.0.2",
